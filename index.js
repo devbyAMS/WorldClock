@@ -26,8 +26,30 @@ function updateTime() {
   );
 }
 
+function updateCity(event) {
+  let cityTimeZone = event.target.value;
+  let cityName = cityTimeZone.replace("_", "").split("/")[1];
+  let cityTime = moment().tz(cityTimeZone);
+  let citiesElement = document.querySelector("#cities");
+  citiesElement.innerHTML = cityTimeZone;
+  citiesElement = (
+    <div class="city">
+      <div>
+        <h2>${cityTimeZone}</h2>
+        <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
+      </div>
+      <div class="time">
+        ${cityTime.format("h:mm:ss")} <small> ${cityTime.format("A")} </small>
+      </div>
+    </div>
+  );
+}
+
 updateTime();
 setInterval(updateTime, 1);
+
+let citiesSelect = document.querySelector("#cities");
+citiesSelect.addEventListener("change", updateCity);
 
 // New York
 let losAngelesElement = document.querySelector("#los-angeles");
