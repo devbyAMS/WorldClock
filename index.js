@@ -2,10 +2,8 @@ function updateTime() {
   // LosAngeles
   let losAngelesElement = document.querySelector("#los-angeles");
   if (losAngelesElement) {
-    let losAngelesDateElement =
-      losAngelesElement.document.querySelector(".date");
-    let losAngelesTimeElement =
-      losAngelesElement.document.querySelector(".time");
+    let losAngelesDateElement = losAngelesElement.querySelector(".date");
+    let losAngelesTimeElement = losAngelesElement.querySelector(".time");
     let losAngelesTime = moment().tz("America/Los_Angeles");
     losAngelesDateElement.innerHTML = losAngelesTime.format("MMMM Do YYYY");
     losAngelesTimeElement.innerHTML = losAngelesTime.format(
@@ -16,8 +14,8 @@ function updateTime() {
   // Paris
   let parisElement = document.querySelector("#paris");
   if (parisElement) {
-    let parisDateElement = parisElement.document.querySelector(".date");
-    let parisTimeElement = parisElement.document.querySelector(".time");
+    let parisDateElement = parisElement.querySelector(".date");
+    let parisTimeElement = parisElement.querySelector(".time");
     let parisTime = moment().tz("Europe/Paris");
     parisDateElement.innerHTML = parisTime.format("MMMM Do YYYY");
     parisTimeElement.innerHTML = parisTime.format(
@@ -32,7 +30,7 @@ function updateCity(event) {
     cityTimeZone = moment.tz.guess();
   }
 
-  let cityName = cityTimeZone.replace("_", "").split("/")[1];
+  let cityName = cityTimeZone.replace("_", " ").split("/")[1];
   let cityTime = moment().tz(cityTimeZone);
   let citiesElement = document.querySelector("#cities");
   citiesElement.innerHTML = `
