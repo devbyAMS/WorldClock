@@ -56,6 +56,7 @@ function updateCity(event) {
 
   if (cityTimeZone === "all") {
     document.querySelector("#cities").innerHTML = originalHTML;
+    updateTime();
     return;
   }
 
