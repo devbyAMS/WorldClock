@@ -1,88 +1,60 @@
-const originalHTML = document.querySelector("#cities").innerHTML;
+document.addEventListener("DOMContentLoaded", function () {
+  const originalHTML = document.querySelector("#cities").innerHTML;
 
-function updateTime() {
-  let losAngelesElement = document.querySelector("#los-angeles");
-  if (losAngelesElement) {
-    let losAngelesDateElement = losAngelesElement.querySelector(".date");
-    let losAngelesTimeElement = losAngelesElement.querySelector(".time");
-    let losAngelesTime = moment().tz("America/Los_Angeles");
+  function updateTime() {
+    const cities = [
+      { id: "los-angeles", timeZone: "America/Los_Angeles" },
+      { id: "paris", timeZone: "Europe/Paris" },
+      { id: "new-york", timeZone: "America/New_York" },
+      { id: "Auckland", timeZone: "Pacific/Auckland" },
+    ];
 
-    losAngelesDateElement.innerHTML = losAngelesTime.format("MMMM Do YYYY");
-    losAngelesTimeElement.innerHTML = losAngelesTime.format(
-      "h:mm:ss [<small>]A[</small>]"
-    );
+    cities.forEach((city) => {
+      const element = document.querySelector(`#${city.id}`);
+      if (element) {
+        const dateElement = element.querySelector(".date");
+        const timeElement = element.querySelector(".time");
+        const now = moment().tz(city.timeZone);
+        dateElement.innerHTML = now.format("MMMM Do YYYY");
+        timeElement.innerHTML = now.format("h:mm:ss [<small>]A[</small>]");
+      }
+    });
   }
 
-  let parisElement = document.querySelector("#paris");
-  if (parisElement) {
-    let parisDateElement = parisElement.querySelector(".date");
-    let parisTimeElement = parisElement.querySelector(".time");
-    let parisTime = moment().tz("Europe/Paris");
+  function updateCity(event) {
+    let cityTimeZone = event.target.value;
+    if (cityTimeZone === "") return;
 
-    parisDateElement.innerHTML = parisTime.format("MMMM Do YYYY");
-    parisTimeElement.innerHTML = parisTime.format(
-      "h:mm:ss [<small>]A[</small>]"
-    );
-  }
+    if (cityTimeZone === "all") {
+      document.querySelector("#cities").innerHTML = originalHTML;
+      updateTime(); // wichtig: nach Reset neu ausführen!
+      return;
+    }
 
-  let newYorkElement = document.querySelector("#new-york");
-  if (newYorkElement) {
-    let newYorkDateElement = newYorkElement.querySelector(".date");
-    let newYorkTimeElement = newYorkElement.querySelector(".time");
-    let newYorkTime = moment().tz("America/New_York");
+    if (cityTimeZone === "current") {
+      cityTimeZone = moment.tz.guess();
+    }
 
-    newYorkDateElement.innerHTML = newYorkTime.format("MMMM Do YYYY");
-    newYorkTimeElement.innerHTML = newYorkTime.format(
-      "h:mm:ss [<small>]A[</small>]"
-    );
-  }
+    const now = moment().tz(cityTimeZone);
+    const cityName = cityTimeZone.split("/")[1].replace("_", " ");
+    const citiesElement = document.querySelector("#cities");
 
-  let aucklandElement = document.querySelector("#Auckland");
-  if (aucklandElement) {
-    let aucklandDateElement = aucklandElement.querySelector(".date");
-    let aucklandTimeElement = aucklandElement.querySelector(".time");
-    let aucklandTime = moment().tz("Pacific/Auckland");
-
-    aucklandDateElement.innerHTML = aucklandTime.format("MMMM Do YYYY");
-    aucklandTimeElement.innerHTML = aucklandTime.format(
-      "h:mm:ss [<small>]A[</small>]"
-    );
-  }
-}
-
-function updateCity(event) {
-  let cityTimeZone = event.target.value;
-  if (cityTimeZone.length === 0) return;
-
-  if (cityTimeZone === "all") {
-    document.querySelector("#cities").innerHTML = originalHTML;
-    updateTime();
-    return;
-  }
-
-  if (cityTimeZone === "current") {
-    cityTimeZone = moment.tz.guess();
-  }
-
-  let cityName = cityTimeZone.replace("_", " ").split("/")[1];
-  let cityTime = moment().tz(cityTimeZone);
-
-  let citiesElement = document.querySelector("#cities");
-  citiesElement.innerHTML = `
-    <div class="city">
-      <div>
-        <h2>${cityName}</h2>
-        <div class="date">${cityTime.format("MMMM Do YYYY")}</div>
+    citiesElement.innerHTML = `
+      <div class="city">
+        <div>
+          <h2>${cityName}</h2>
+          <div class="date">${now.format("MMMM Do YYYY")}</div>
+        </div>
+        <div class="time">${now.format("h:mm:ss")} <small>${now.format(
+      "A"
+    )}</small></div>
       </div>
-      <div class="time">${cityTime.format("h:mm:ss")} <small>${cityTime.format(
-    "A"
-  )}</small></div>
-    </div>
-  `;
-}
+    `;
+  }
 
-let citySelectElement = document.querySelector("#city");
-citySelectElement.addEventListener("change", updateCity);
+  updateTime(); // initiale Anzeige aller Städte
+  setInterval(updateTime, 1000); // regelmäßiges Update
 
-updateTime();
-setInterval(updateTime, 1000);
+  const citySelectElement = document.querySelector("#city");
+  citySelectElement.addEventListener("change", updateCity);
+});
